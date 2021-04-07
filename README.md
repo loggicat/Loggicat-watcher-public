@@ -13,12 +13,9 @@
 <h3 align="left">
 For <a href="https://github.com/loggicat/Loggicat-watcher-public">Loggicat Watcher</a>
 </h3>
-<br />
-
 <h3 align="left">
 For <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud</a>
 </h3>
-<br />
 
 ---
 
