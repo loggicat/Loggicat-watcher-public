@@ -19,12 +19,11 @@ For <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud</a>
 
 ---
 
-# Getting Started With Loggicat Cloud
+# Getting Started With Loggicat Watcher
 * **[Overview](#overview)** What is Loggicat?
-* **[Why Loggicat](#why-loggicat)** Why do I need Loggicat?
-* **[Workflow](#workflows)** Some typical Loggicat use cases
-* **[Features](#features)** Available features
-* **[Integration](#integrations)** Integrate Loggicat with popular tools such as Github, Slack
+* **[Installation](#installation)** How to install Loggicat Watcher?
+* **[Modes](#modes)** Different operation modes
+* **[Configuration](#configuration)** Available features
 * **[Important Notes](#important-notes)** Please read this section before your first login
 * **[Questions](#questions)** Answers to some common questions
 
@@ -32,11 +31,8 @@ For <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud</a>
 ---
 
 # Overview
-**Loggicat provides a solution to data leaks and drastically decrese the detection time for such issues from months to seconds or hours.**
+More information is avaiable at <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud Wiki</a>
 <br />
-There are two components:
-- Loggicat Cloud - A saas server to store security findings and configurations.
-- Loggicat Watcher - Deployed on client machines or build machines to scan code, logs and databases.
 
 ---
 
