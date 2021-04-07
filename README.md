@@ -21,10 +21,10 @@ For <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud</a>
 
 # Getting Started With Loggicat Watcher
 * **[Overview](#overview)** What is Loggicat
-* **[Versions](#version)** Choose the right Loggicat Watcher version to use
+* **[Versions](#versions)** Choose the right Loggicat Watcher version to use
 * **[Features](#featrues)** Available features
-* **[Installation](#installation)** How to install Loggicat Watcher
-* **[Operation Modes](#modes)** Different operation modes
+* **[Prerequisite](#prerequisite)** Before running Loggicat Watcher
+* **[Operation Modes](#operation-modes)** Different operation modes
 * **[Output Modes](#modes)** Different output modes
 * **[Configuration](#configuration)** Settings and configurations
 * **[Start Loggicat Watcher](#configuration)** Steps to run Loggicat Watcher
@@ -49,111 +49,22 @@ There are two versions available. This repo is the **open-source** version and s
 
 ---
 
-# Installation
-
-
----
-
-# Workflows
-Essentially Loggicat uses a smart engine to detect security issues such as plaintext secrets or PII in given text, so Loggicat can be used under many different circumstances.
-<details>
-<summary>
-  Protecting data security in <img src="https://raw.githubusercontent.com/loggicat/Loggicat-Cloud-Wiki/main/public/splunk-logo-2.png" height="70" />
-</summary>
-<br />
-Before sending local logs to Splunk, we can now have Loggicat watcher to monitor local logs first and any potential sensitive data will be extracted from the logs and sent to Loggicat Cloud, your splunk logs will always be clean.   
-  
-_Noted : Streaming mode is currentely not supproted. It will be added in the next release._
- 
-</details>
-<details>
-<summary>
-  Protecting data security in <img src="https://raw.githubusercontent.com/loggicat/Loggicat-Cloud-Wiki/main/public/logo-jenkins.jpg" height="70" />
-</summary>
-<br />
-Jenkins is a very power CI/CD platform especially with a vast number of plugins. However, this also introduces extra risks since a plugin might log sensitive data in plaintext. Loggicat Watcher can be configured in this case to ensure that any job console output and Jenkins logs are clean. 
-<img src="https://raw.githubusercontent.com/loggicat/Loggicat-Cloud-Wiki/main/public/splunk-logo-2.png" height="70" />
-  
-</details>
-<details>
-<summary>
-  Protecting data security in <img src="https://raw.githubusercontent.com/loggicat/Loggicat-Cloud-Wiki/main/public/GitHub-logo.png" height="70" />
-</summary>
-<br />
-Loggicat watcher can scan local code for potential sensitive data.
-  
-_Noted :  pre-commit-hooks is currentely not supproted. It will be added in the next release. Cloud Git repo scan will also be added._
-
-</details>
-
----
-
 # Features
+- Scan local code for secrets and PII (Github repo scan and commit scan will be released in the future releases)
+- Scan local logs for secrets and PII
+- Monitoring local logs, vulnerable lines will be temporarily on-hold until released by an user (Log streaming is currentely not supported)
 
-## Security Rules
+---
 
-There are two types of security rules <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/builtinrules1.PNG" height="250" />
+# Prerequisite
+redis is required, if it is not installed, download the installer from the <a href="https://redis.io/">offical website</a> or follow the <a href="https://hub.docker.com/_/redis/">docker installation guide</a>
+For open-source version : Go is required, <a href="https://golang.org/doc/install">Go installation guide</a> 
 
-- **Builtin rules** : 
-Pre-defined rules created by Loggicat Engine, users can choose to enable/disable builtin rules.<br />
-Builtin rules can be found in "Manage Security Rules" -> "Built-in Security Rules".
-- **Custom rules** : When the token/secret you are using is not in the builtin rules, users should reach out to us using the "Contact us" button in the builtin rules tab. <br />
-Before new rules are created, users can choose to create some temporary regex rules in "Manage Security Rules" -> Custom Security Rules".<br />
-To create such rules, simply create the "Add a new rule" button.
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/customrules1.PNG" height="250" />
-In order to create a custom rule, a name and a keyword must be given, keyword can be regex or just simply a string, the input text is for users to validate the keyword works as expected.
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/customrules2.PNG" height="250" />
-Once a cusom rule is created, users can 
+---
 
-   - Enable/Disable a custom rule
-   - Edit
-   - Delete
-   - Add a pattern to always ignore (see AllowLists section)
-   - Add a pattern to always redact (see AllowLists section)
-   
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/customrules3.PNG" height="250" />
-
-## Allowlists
-Loggicat handles false postivies or acceptd risks by using allowlists. <br />
-- **Ignore list**: Accepting the risk, once a keyword/finding is ignored, future matches from the same security rule will be ignored. Ignore should be used on **false positives**.
-- **Redact list**: Similar to ignore list, future matches to the items on the redact list will not be reported, the finding will be redacted instead. Redact should be used for **non false positives**.
-
-There are two ways to add a new item to allowlists.
-1. Added from "Findings", users will not be able to change the keyword in this case
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/allowlist1.PNG" />
-Ignore Popup:
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/allowlist3.PNG" height="200"/>
-Redact Popup: Loggicat currently supports 5 patterns to redact findings
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/allowlist4.PNG" height="200"/>
-
-2. Added from "Manage Security Rules"
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/allowlist2.PNG" height="300" />
-Ignore Popup:
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/allowlist5.PNG" height="200"/>
-Redact Popup: 
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/allowlist6.PNG" height="200"/>
-
-_Items added to whitelists can be edited or removed from "**Manage Allowlist**"_
-
-## Findings
-Security findings from both builtin rules and custom rules can be audited/triaged from the "Findings" tab on the sidebar.<br />
-Click on a row to expand to view more information
-
-## Scan Test
-With the Scan Test feature, users are able to try out Loggicat Engine eaisly without setting up the Loggicat Watcher.<br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/scantest1.PNG" height="200"/>
-
-Sample text:
-```
-this is my line 1
-this is my line 2
-this is my line 3 but with an AWS access key AKIAIOSFODNN7EXAMPLE
-```
-Result: <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/scantest2.PNG" height="400"/>
-
-_Noted: nothing will be stored/logged on Loggicat Cloud using Scan Test, so feel free to put some real logs there to see how it works_
+# Operation Modes
+- Watcher : monitor files, changes will be scanned as well, this should be used for logs
+- Scanner : one time scan, this should be used for logs and code
 
 ---
 
