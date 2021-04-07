@@ -20,10 +20,14 @@ For <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud</a>
 ---
 
 # Getting Started With Loggicat Watcher
-* **[Overview](#overview)** What is Loggicat?
-* **[Installation](#installation)** How to install Loggicat Watcher?
-* **[Modes](#modes)** Different operation modes
-* **[Configuration](#configuration)** Available features
+* **[Overview](#overview)** What is Loggicat
+* **[Versions](#version)** Choose the right Loggicat Watcher version to use
+* **[Features](#featrues)** Available features
+* **[Installation](#installation)** How to install Loggicat Watcher
+* **[Operation Modes](#modes)** Different operation modes
+* **[Output Modes](#modes)** Different output modes
+* **[Configuration](#configuration)** Settings and configurations
+* **[Start Loggicat Watcher](#configuration)** Steps to run Loggicat Watcher
 * **[Important Notes](#important-notes)** Please read this section before your first login
 * **[Questions](#questions)** Answers to some common questions
 
@@ -36,10 +40,17 @@ More information is avaiable at <a href="https://github.com/loggicat/Loggicat-Cl
 
 ---
 
-# Why Loggicat
-- **Seamless integration** : Loggicat will not change how you work, it can be used on top of any other tools.
-- **Another layer of security** : Even if you already have an in-house solution or another tool, it is always good to have something else since there might always be some false-negatives cases in the security world
-- **FREE** - Any company can request to have a few license to enjoy all the features for FREE!
+# Versions
+There are two versions available. This repo is the **open-source** version and should only be used to understand how Loggicat Watcher can be integrated in your dev environment, please use the closed-source version for production use and for better performance.
+|  | How to scan | Scan speed | Keep data to local only | Limit | 
+| ------------- | ------------- | ------------- | ------------- | ------------- | 
+| Open-Source Ver  | Use Loggicat Cloud Engine API | Slow, this depends on network speed |  No, the open-source version must send text to Loggicat Cloud | 100 MB per user per day for free users |
+| Closed-Source Ver  | Scan engine is built-in  | fast | Yes, scan engine can be used locally without sending anything to Loggicat Cloud | There is no limit |
+
+---
+
+# Installation
+
 
 ---
 
