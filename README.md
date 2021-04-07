@@ -63,8 +63,8 @@ For open-source version : Go is required, <a href="https://golang.org/doc/instal
 ---
 
 # Operation Modes
-- Watcher : monitor files, changes will be scanned as well, this should be used for logs
-- Scanner : one time scan, this should be used for logs and code
+- **Watcher** : monitor files, changes will be scanned as well, this should be used for logs
+- **Scanner** : one time scan, this should be used for logs and code
 
 ---
 
