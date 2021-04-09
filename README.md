@@ -24,8 +24,6 @@ For <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud</a>
 * **[Versions](#versions)** Choose the right Loggicat Watcher version to use
 * **[Features](#featrues)** Available features
 * **[Prerequisite](#prerequisite)** Before running Loggicat Watcher
-* **[Operation Modes](#operation-modes)** Different operation modes
-* **[Output Modes](#modes)** Different output modes
 * **[Configuration](#configuration)** Settings and configurations
 * **[Start Loggicat Watcher](#configuration)** Steps to run Loggicat Watcher
 * **[Important Notes](#important-notes)** Please read this section before your first login
@@ -62,99 +60,25 @@ For open-source version : Go is required, <a href="https://golang.org/doc/instal
 
 ---
 
-# Operation Modes
+# Configuration
+A configuration json file should contain following 
+```
+test
+```
+
+---
+
+## Operation Modes
 - **Watcher** : monitor files, changes will be scanned as well, this should be used for logs
 - **Scanner** : one time scan, this should be used for logs and code
 
 ---
 
-# Watcher Management
-In order to leverage all features on Loggicat Cloud, a Loggicat Watcher must be used, Watcher Management is to monitor watcher activities and generate refresh tokens.
+## Output Modes
+- **Online** : Scan results will be sent to Loggicat Cloud
+- **Offline** : Generate a local json file to store scan results, many features are not available in this mode.
 
 ---
-
-# Integrations
-**All tokens/secrets/webhooks mentioned in this section are encrypted on Loggicat Cloud.**<br />
-**Loggicat Cloud will never return plaintext secrets/token back to users, neither from UI or APIs.**<br />
-Loggicat has integrated Github and Slack, other integrations(including Gitlab, Jira, Jenkins, etc.) are under development and will be released in the future.
-
-## Github
-Github integration turns logs with sensitive data to the exact code location, this can help developers to fix issues much faster. <br />
-_Noted that : Github Code search/scan and commit monitoring are not released yet._ <br />
-
-In order to use Github integration, a <a href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token">Github Personal Access Token</a> must be created and stored on Loggicat. <br />
-Following scopes are required : 
-  - Full access to repos, this is required in order to scan and search in private repos. public_repo if only for public repos
-  - read:org 
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/github1.PNG" height="200"/>
-
-Github Tokens should be added from the "Github Integration" tab and a name must be provided. <br />
-
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/github2.PNG" height="200"/>
-In this page, you can choose to add/remove/enable/disable Github tokens, the "Test" button will validate the entered Github token and return a list of repos. </ br>
-
-Once at least one token is added to Loggicat Cloud, now users can go to "Findings" tab and trigger a scan manually. <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/github3.PNG" height="200"/>
-
-_Noted that : Scans will be triggered automatically for newly added findings._ <br />
-
-Users might see following Github search status:
-  - Not started : A job has been been created, a manual scan might be needed
-  - Pending : A job has been created and will be triggered soon
-  - Owner Infomation Found : Search is done and Loggicat has found the owner
-  - Owner Infomation Not Found : Search is done and Loggicat has not found the owner
-  - No Github token available : No Github tokens to use
-  - Invalid Gtihub tokens or Invalid confidence setting : Expired Github tokens
-
-Once the result is ready, users can click on the "Display Owner Information" button(as shown in the previous paragraph) to view owner information. <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/github4.PNG" height="200"/>
-
-Confidence is used to measure the accuracy, when the returned infomration seems irrelevant, raise the confidence level. When Loggicat can't find any owner information for many of the findings, try lower the confidence level. <br />
-The default confidence is 70% and is configurable in "Github Integration" -> "Github Integration Settings" <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/github5.PNG" height="200"/>
-
-
-## Slack
-With Slack integration, Loggicat Cloud will be able to notify the right person or channel in real time. <br />
-
-### Create a slack bot user and generate bot token
-1. Create a slack app following this <a href="https://api.slack.com/authentication/basics">guide</a>. <br />
-2. Once a slack app is created for your workplace, go to "OAuth & Permissions" to create a bot token. <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/slack1.PNG" height="200"/>
-3. Create a bot token with following bot token scopes.
-  - chat:write
-  - im:write
-  - incoming-webhook
-  - users.profile:read
-  - users:read
-  - users:read.email
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/slack2.PNG" height="200"/>
-4. Create a channel for Loggicat notifications on slack and install the app to the that channel. <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/slack3.PNG" height="200"/>
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/slack4.PNG" height="200"/>
-5. Now you should have a slack token starting with xoxb-
-
-### Add a slack bot token to Loggicat
-Simply go to "Slack Integration" page. <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/slack5.PNG" height="200"/> <br />
-Users can choose to make the default notification target to either a channel or an user. <br />
-_noted that the user full name won't work, you will need to either use the email address or the user ID_ <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/slack6.PNG" height="200"/> <br />
-Messages sent to this channel/user will only contain the number and the categories of findings. <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/slack7.PNG" />
-
-### Add a user/channel mapping
-Loggicat Cloud currentely supports 3 types of mappings in "Slack Integration" -> "Slack Integration Settings"
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/slack9.PNG" height="200"/>
-  1. Repo name to Slack channel/Username : This can be used to notify the owner of a github repo, for example, a github teamA/repo1 should be mapped to a slack channel owned by teamA, so whenever Loggicat finds a vulnerability in that repo, they will be notified ASAP. 
-  2. Username to Slack channle/Username : This maps an username on github to an username on slack, so whenever this user commits anything vulnerable, she/he will be notified.
-  3. Hostname to Slack channel/Username : Security findings reported by Loggicat Watcher will always include a hostname, users can choose to use the hostname as a mapping source. For example, teamA owns a build machine jenkinsA so Loggicat will notify the team channel whenever it sees findings from jenkinsA.
-
-_note : The first two mappings(repo name and username) will only be triggered with after Github owner search, while the hostname mapping doesn't need Github integration._
-
-Sample message : <br />
-<img src="https://github.com/loggicat/Loggicat-Cloud-Wiki/blob/main/public/slack8.PNG" height="200"/>
-
 
 ---
 
