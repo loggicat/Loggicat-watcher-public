@@ -61,18 +61,48 @@ For open-source version : Go is required, <a href="https://golang.org/doc/instal
 ---
 
 # Configuration
-A configuration json file should contain following 
+A configuration json file should contain following information
 ```
-test
+{
+  "operationMode": "",            //Watcher mode or Scanner mode
+
+  "refreshToken": "",             //Refresh token generated on Loggicat Cloud
+  "tokenStorage": "",             //redis or memory
+  
+  "serverurl": "",                //Loggicat Cloud url
+  "redisurl": "",                 //redis url, default value is localhost:6379
+  
+  "refreshTime": ,                //time gap to pull releases from Loggicat Cloud
+  
+  "files": [                      //foldernames or filenames
+      "" 
+  ],
+  "fileExtensions": [             //allowed extentions, this should still be usd even filenames are provided in "files"
+      ""                         
+  ],
+  
+  "outputMode": "",               //online or offline
+  "outputLocation": ""            //output file location, only used in offline output mode
+}
 ```
-
----
-
 ## Operation Modes
 - **Watcher** : monitor files, changes will be scanned as well, this should be used for logs
 - **Scanner** : one time scan, this should be used for logs and code
 
----
+## Refresh Token, Token Storage
+Refresh token can be generated on Loggicat Cloud. <br />
+Loggicat Watcher will generate access tokens using the provided refresh token, refresh tokens can not be reused and will expire in 24 hours.<br />
+
+There are two ways to store tokens. <br />
+- **memory** : tokens will be stored in memory, which means a new refresh token must be used to run Loggicat Watcher
+- **redis** : tokens will be stored in redis, so as long as tokens are valid, users do not need to generate a new refresh token.
+
+## Server Url, redis url
+Server url should always be https://app.loggicat.com/ for now. <br />
+The default value for redis url is localhost:6379, redis auth is currentely not supported. <br />
+
+## Refresh time
+
 
 ## Output Modes
 - **Online** : Scan results will be sent to Loggicat Cloud
