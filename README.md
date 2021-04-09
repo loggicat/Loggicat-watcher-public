@@ -87,7 +87,7 @@ A configuration json file should contain following information
 - **Watcher** : monitor files, changes will be scanned as well, this should be used for logs
 - **Scanner** : one time scan, this should be used for logs and code
 In the Watcher mode, clean logs and released security findings will be appended to new logs files with **.loggicat** extension. <br />
-For example, if you use myAppLog.txt in your current log configuration, you should now use myAppLog.txt.loggicat instead.
+For example, if you are forward myAppLog.txt to a log ingestion tool, you should now use myAppLog.txt.loggicat instead.
 
 ## Refresh Token, Token Storage
 Refresh token can be generated on Loggicat Cloud. <br />
@@ -139,5 +139,5 @@ loggicatWatcher.exe config.json
 # Important Notes
 1. Non-nessccary builtin rules should be disabled to speed up the scan speed, however, generic rules such as "Generic Secrets" should always be enabled.
 2. Ignore list has higher priority than redact list, so your finding will be ignored if you have the same keyword in both ignore and redact lists, a feature to improve this behavior is under development.
-
+3. Watcher mode should only be used for logs, local code monitoring mode and code push monitoring are under development.
 
