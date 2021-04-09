@@ -1,0 +1,17 @@
+{
+    "refreshToken": "",
+    "operationMode": "scanner",
+    "tokenStorage": "redis",
+    "refreshTime": 30,
+    "serverurl": "https://app.loggicat.com",
+    "redisurl": "localhost:6379",
+    "fileExtensions": [
+        "txt",
+        "log"
+    ],
+    "files": [
+        "/var/log/app.log"
+    ],
+    "outputMode": "online",
+    "outputLocation": "/var/log/output.json"
+}
