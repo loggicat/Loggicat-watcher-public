@@ -25,10 +25,8 @@ For <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud</a>
 * **[Features](#featrues)** Available features
 * **[Prerequisite](#prerequisite)** Before running Loggicat Watcher
 * **[Configuration](#configuration)** Settings and configurations
-* **[Start Loggicat Watcher](#configuration)** Steps to run Loggicat Watcher
+* **[CLI Usages](#cli-usages)** How to use Loggicat Watcher CLI
 * **[Important Notes](#important-notes)** Please read this section before your first login
-* **[Questions](#questions)** Answers to some common questions
-
 
 ---
 
@@ -88,6 +86,8 @@ A configuration json file should contain following information
 ## Operation Modes
 - **Watcher** : monitor files, changes will be scanned as well, this should be used for logs
 - **Scanner** : one time scan, this should be used for logs and code
+In the Watcher mode, clean logs and released security findings will be appended to new logs files with **.loggicat** extension. <br />
+For example, if you use myAppLog.txt in your current log configuration, you should now use myAppLog.txt.loggicat instead.
 
 ## Refresh Token, Token Storage
 Refresh token can be generated on Loggicat Cloud. <br />
@@ -102,18 +102,42 @@ Server url should always be https://app.loggicat.com/ for now. <br />
 The default value for redis url is localhost:6379, redis auth is currentely not supported. <br />
 
 ## Refresh time
+Loggicat Clouds never push contents to Loggicat Watcher so in order to append triaged result to logs, Watcher periodically pulls the result from Loggicat Cloud, this configuration value is in minutes. 
 
+### Files, File extensions
+Files consist an array of filenames or foldernames. <br />
+File extensions is used to avoid scanning unnesscary files.
 
-## Output Modes
+## Output Modes, Output Location
 - **Online** : Scan results will be sent to Loggicat Cloud
-- **Offline** : Generate a local json file to store scan results, many features are not available in this mode.
+- **Offline** : Generate a local json file to store scan results, many features are not available in this mode. Output location is used i nthis mode.
 
 ---
+
+# CLI Usages
+
+## Open-source version
+```
+//Generate a config file using inputs
+go run main.go
+
+//using the config template
+go run main.go ../config.json
+```
+
+### Closed-source version
+```
+//Generate a config file using inputs
+loggicatWatcher.exe
+
+//using the config template
+loggicatWatcher.exe config.json
+```
 
 ---
 
 # Important Notes
 1. Non-nessccary builtin rules should be disabled to speed up the scan speed, however, generic rules such as "Generic Secrets" should always be enabled.
 2. Ignore list has higher priority than redact list, so your finding will be ignored if you have the same keyword in both ignore and redact lists, a feature to improve this behavior is under development.
-3. Please use the "Contact us" button to report any bug or feature request, this is the simplest and most efficient way.
+
 
