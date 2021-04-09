@@ -97,7 +97,7 @@ There are two ways to store tokens. <br />
 - **memory** : tokens will be stored in memory, which means a new refresh token must be used to run Loggicat Watcher
 - **redis** : tokens will be stored in redis, so as long as tokens are valid, users do not need to generate a new refresh token.
 
-## Server Url, redis url
+## Server url, Redis url
 Server url should always be https://app.loggicat.com/ for now. <br />
 The default value for redis url is localhost:6379, redis auth is currentely not supported. <br />
 
