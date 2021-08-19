@@ -22,7 +22,7 @@ For <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud</a>
 # Getting Started With Loggicat Watcher
 * **[Overview](#overview)** What is Loggicat
 * **[Versions](#versions)** Choose the right Loggicat Watcher version to use
-* **[Features](#featrues)** Available features
+* **[Features](#features)** Available features
 * **[Prerequisite](#prerequisite)** Before running Loggicat Watcher
 * **[Configuration](#configuration)** Settings and configurations
 * **[CLI Usages](#cli-usages)** How to use Loggicat Watcher CLI
