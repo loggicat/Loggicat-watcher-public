@@ -145,7 +145,6 @@ func (w *Watcher) handleScanResult(uploadMode string, fileName string, newFileSi
 			return err
 		}
 		log.Info(strconv.Itoa(len(newScanRes)) + " findings found and " + msg)
-		fmt.Println(strconv.Itoa(len(newScanRes)) + " findings found and " + msg)
 	}
 
 	if nonVulnerableLines != "" {

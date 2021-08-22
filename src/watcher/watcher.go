@@ -15,7 +15,6 @@ import (
 //Init : Watcher init
 func (w *Watcher) Init(configFile string) {
 	log.Info("Watcher Initiating...")
-	fmt.Println("Watcher Initiating...")
 	hostName, err := os.Hostname()
 	if err != nil {
 		fmt.Println("Loggicat Cloud is down, err : ", err)
@@ -61,13 +60,11 @@ func (w *Watcher) Init(configFile string) {
 		if w.redisGet("refreshToken") == "" {
 			w.redisSet("refreshToken", conf.RefreshToken)
 			log.Info("Using Redis to store refresh tokens")
-			fmt.Println("Using Redis to store refresh tokens")
 		}
 	case "memory":
 		w.refreshToken = conf.RefreshToken
 		w.accessTokenExpire = ""
 		log.Info("Using Memory to store refresh tokens")
-		fmt.Println("Using Memory to store refresh tokens")
 	}
 	w.checkAccessToken()
 
@@ -88,7 +85,6 @@ func (w *Watcher) Init(configFile string) {
 	watcherID := w.redisGet("watcherID")
 	if watcherID == "" {
 		log.Info("WatcherID is not in redis, registering...")
-		fmt.Println("WatcherID is not in redis, registering...")
 		esID, err := w.register()
 		if err != nil {
 			fmt.Println("Failed to register watcher, err : ", err)
@@ -97,10 +93,8 @@ func (w *Watcher) Init(configFile string) {
 		w.redisSet("watcherID", esID)
 		w.watcherID = esID
 		log.Info("Watcher registered on Loggicat Cloud")
-		fmt.Println("Watcher registered on Loggicat Cloud")
 	} else {
 		log.Info("WatcherID obtained from redis")
-		fmt.Println("WatcherID obtained from redis")
 		w.watcherID = watcherID
 	}
 
@@ -113,7 +107,6 @@ func (w *Watcher) Init(configFile string) {
 //Noted that fsnotify can only watch ~8k files, https://github.com/fsnotify/fsnotify
 func (w *Watcher) MonitorFiles() {
 	log.Info("Start monitoring files")
-	fmt.Println("Start monitoring files")
 	fsn, err := fsnotify.NewWatcher()
 	if err != nil {
 		fmt.Println("Failed to start fsnotify, err :", err)
@@ -178,7 +171,6 @@ func (w *Watcher) ScanFiles() {
 			continue
 		}
 		log.Info("Scanning file", fileName)
-		fmt.Println("Scanning files", fileName)
 		err = w.processLogWithAPI("scanner", fileName)
 		if err != nil {
 			log.Error("Error in scanFile", err)
@@ -186,7 +178,6 @@ func (w *Watcher) ScanFiles() {
 			continue
 		}
 		log.Info("Finished scanning", fileName)
-		fmt.Println("Finished scanning", fileName)
 	}
 
 }

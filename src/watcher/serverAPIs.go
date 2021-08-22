@@ -47,7 +47,6 @@ func (w *Watcher) healthCheck() {
 	}
 
 	log.Info("Loggicat Cloud is online")
-	fmt.Println("Loggicat Cloud is online")
 }
 
 func (w *Watcher) setAccessToken() {
@@ -118,12 +117,10 @@ func (w *Watcher) register() (string, error) {
 
 	if res.Code != 200 || res.Message == "" {
 		log.Info("Failed to obtain WatcherID, err : ", res.Message)
-		fmt.Println("Failed to obtain WatcherID, err : ", res.Message)
 		return "", errors.New(res.Message)
 	}
 
 	log.Info("WatcherID obtained from server")
-	fmt.Println("WatcherID obtained from server")
 	return res.Message, nil
 }
 
@@ -140,7 +137,6 @@ func (w *Watcher) removeRelease(toRemoveString string) error {
 		}
 		if strings.Contains(string(respondBody), "200") {
 			log.Info("Updated release information")
-			fmt.Println("Updated release information")
 			w.redisSet("toRemove", "")
 		} else {
 			return err
@@ -153,7 +149,6 @@ func (w *Watcher) removeRelease(toRemoveString string) error {
 func (w *Watcher) GetRelease() {
 	for {
 		log.Info("GetReleaseSubProcess - Checking released findings from Loggicat Cloud")
-		fmt.Println("GetReleaseSubProcess - Checking released findings from Loggicat Cloud")
 		toRemoveString := w.redisGet("toRemove")
 		if toRemoveString != "" {
 			err := w.removeRelease(toRemoveString)
@@ -216,7 +211,6 @@ func (w *Watcher) GetRelease() {
 
 		}
 		log.Info("GetReleaseSubProcess - Finished checking released findings from Loggicat Cloud, sleeping now...")
-		fmt.Println("GetReleaseSubProcess - Finished checking released findings from Loggicat Cloud, sleeping now...")
 		time.Sleep(time.Duration(w.refreshTime) * time.Minute)
 	}
 }

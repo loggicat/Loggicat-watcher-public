@@ -47,14 +47,11 @@ func main() {
 	switch watcher.OperationMode {
 	case "watcher":
 		log.Info("Switching to Watcher Mode...")
-		fmt.Println("Switching to Watcher Mode...")
 		go watcher.GetRelease()
 		watcher.MonitorFiles()
 	case "scanner":
 		log.Info("Switching to Scanner Mode...")
-		fmt.Println("Switching to Scanner Mode...")
 		watcher.ScanFiles()
 		log.Info("Scanned all files...Exiting...")
-		fmt.Println("Scanned all files...Exiting...")
 	}
 }

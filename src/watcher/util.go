@@ -33,7 +33,6 @@ func (w *Watcher) redisGet(key string) string {
 	switch {
 	case err == redis.Nil:
 		log.Info("Redis key doesn't exist", key)
-		fmt.Println("Redis key doesn't exist", key)
 		return ""
 	case err != nil:
 		log.Error("error getting redis key", err)
@@ -239,7 +238,6 @@ func (w *Watcher) checkAccessToken() {
 		now := time.Now().Unix()
 		if accessTokenExpireInt64-now >= 7200 {
 			log.Info("Checking access token expire time, do not need to renew.")
-			fmt.Println("Checking access token expire time, do not need to renew.")
 			return
 		}
 	}
@@ -355,7 +353,6 @@ func (w *Watcher) GenerateConfig() ConfigStruct {
 		log.Fatal("Failed to get current path", err)
 	}
 
-	fmt.Println("New config file watcherConfig.json generated in", path)
 	log.Info("New config file watcherConfig.json generated in", path)
 	return ret
 }
