@@ -1,0 +1,13 @@
+{
+    "operationMode": "scan",
+    "token": "",
+    "uuid": "",
+    "refreshTime": 5,
+    "engineType": "local",
+    "engineURL": "http://localhost:8080",
+    "outputMode": "local",
+    "outputLocation": "output.json",
+    "path": [
+        "logs"
+    ]
+}
