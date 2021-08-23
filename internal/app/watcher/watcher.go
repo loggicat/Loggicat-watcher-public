@@ -204,7 +204,7 @@ func (w *Watcher) processLog(scanMode string, filePath string) ([]api.DataLeak, 
 				"uuid":          w.UUID,
 				"filePath":      filePath,
 				"fileName":      filepath.Base(filePath),
-				"storeOnServer": w.OutputMode == "online",
+				"storeOnServer": w.OutputMode == "cloud",
 				"hostName":      w.HostName,
 			}
 			leaks, err = api.ScanLogSnippet(w.Token, payload)
