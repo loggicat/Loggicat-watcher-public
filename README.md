@@ -11,13 +11,13 @@
 </div>
 
 <h3 align="left">
-For <a href="https://github.com/loggicat/Loggicat-watcher-public">Loggicat Watcher</a>
+For <a href="https://github.com/loggicat/watcher-public">Loggicat Watcher</a>
 </h3>
 <h3 align="left">
 For <a href="https://github.com/loggicat/Loggicat-Cloud-Wiki">Loggicat Cloud</a>
 </h3>
 <h3 align="left">
-For <a href="https://github.com/loggicat/Loggicat-engine">Loggicat Scan Engine</a>
+For <a href="https://github.com/loggicat/scan-engine">Loggicat Scan Engine</a>
 </h3>
 
 ---
@@ -56,64 +56,52 @@ There are two versions available. This repo is the **open-source** version and s
 ---
 
 # Prerequisite
-redis is required, if it is not installed, download the installer from the <a href="https://redis.io/">offical website</a> or follow the <a href="https://hub.docker.com/_/redis/">docker installation guide</a>
-For open-source version : Go is required, <a href="https://golang.org/doc/install">Go installation guide</a> 
-
+<a href="https://golang.org/dl/">GoLang</a> 1.15 or above
 ---
 
 # Configuration
 A configuration json file should contain following information
 ```
 {
-  "operationMode": "",            //Watcher mode or Scanner mode
+  "operationMode": "",              //scan or monitor
 
-  "refreshToken": "",             //Refresh token generated on Loggicat Cloud
-  "tokenStorage": "",             //redis or memory
+  "token": "",                      //Loggicat Cloud API token
+  "uuid": "",                        //Loggicat Cloud API token UUID
   
-  "serverurl": "",                //Loggicat Cloud url
-  "redisurl": "",                 //redis url, default value is localhost:6379
+  "engineType": "",                 //cloud or local
+  "engineURL": "",                  //only used when engineType is local
   
-  "refreshTime": ,                //time gap to pull releases from Loggicat Cloud
+  "refreshTime": ,                  //time gap to pull releases from Loggicat Cloud
   
-  "files": [                      //foldernames or filenames
+  "path": [                         //folders to scan
       "" 
   ],
-  "fileExtensions": [             //allowed extentions, this should still be usd even filenames are provided in "files"
-      ""                         
-  ],
   
-  "outputMode": "",               //online or offline
-  "outputLocation": ""            //output file location, only used in offline output mode
+  "outputMode": "",                 //cloud or local
+  "outputLocation": ""              //output file location, only used when outputMode is local
 }
 ```
 ## Operation Modes
-- **Watcher** : monitor files, changes will be scanned as well, this should be used for logs
-- **Scanner** : one time scan, this should be used for logs and code
-In the Watcher mode, clean logs and released security findings will be appended to new logs files with **.loggicat** extension. <br />
-For example, if you are forward myAppLog.txt to a log ingestion tool, you should now use myAppLog.txt.loggicat instead.
+- **Monitor** : monitor files, changes will be scanned as well, this should be used for logs
+- **Scan** : one time scan, this should be used for logs and code
+In the Monitor mode, clean logs and released security findings will be appended to new logs files with **.loggicat** extension. <br />
+For example, if you are forward myAppLog.txt to a log ingestion platform, you should now use myAppLog.txt.loggicat instead.
 
-## Refresh Token, Token Storage
-Refresh token can be generated on Loggicat Cloud. <br />
-Loggicat Watcher will generate access tokens using the provided refresh token, refresh tokens can not be reused and will expire in 24 hours.<br />
+## API Token, UUID
+API token and UUID can be generated on Loggicat Cloud. <br />
 
-There are two ways to store tokens. <br />
-- **memory** : tokens will be stored in memory, which means a new refresh token must be used to run Loggicat Watcher
-- **redis** : tokens will be stored in redis, so as long as tokens are valid, users do not need to generate a new refresh token.
-
-## Server url, Redis url
-Server url should always be https://app.loggicat.com/ for now. <br />
-The default value for redis url is localhost:6379, redis auth is currentely not supported. <br />
+## Engine Type, Engine URL
+Put "local" for the type if you use <a href="https://github.com/loggicat/scan-engine">Loggicat Scan Engine</a>
 
 ## Refresh time
 Loggicat Clouds never push contents to Loggicat Watcher so in order to append triaged result to logs, Watcher periodically pulls the result from Loggicat Cloud, this configuration value is in minutes. 
 
-### Files, File extensions
-Files consist an array of filenames or foldernames. <br />
-File extensions is used to avoid scanning unnesscary files.
+### Path
+Folders to be scanned
 
 ## Output Modes, Output Location
-- **Online** : Scan results will be sent to Loggicat Cloud
-- **Offline** : Generate a local json file to store scan results, many features are not available in this mode. Output location is used i nthis mode.
+- **Cloud** : Scan results will be sent to Loggicat Cloud
+- **local** : Generate a local json file to store scan results, many features are not available in this mode. Output location is used i nthis mode.
 
 ---
 
@@ -121,26 +109,13 @@ File extensions is used to avoid scanning unnesscary files.
 
 ## Open-source version
 ```
-//Generate a config file using inputs
+//A template will be generated if configs/watcherConfig.json does not exist
 go run main.go
-
-//using the config template
-go run main.go ../config.json
 ```
-
-### Closed-source version
-```
-//Generate a config file using inputs
-loggicatWatcher.exe
-
-//using the config template
-loggicatWatcher.exe config.json
-```
-
 ---
 
 # Important Notes
 1. Non-nessccary builtin rules should be disabled to speed up the scan speed, however, generic rules such as "Generic Secrets" should always be enabled.
 2. Ignore list has higher priority than redact list, so your finding will be ignored if you have the same keyword in both ignore and redact lists, a feature to improve this behavior is under development.
-3. Watcher mode should only be used for logs, local code monitoring mode and code push monitoring are under development.
+3. Monitor mode should only be used for logs, local code monitoring mode and code push monitoring are under development.
 
