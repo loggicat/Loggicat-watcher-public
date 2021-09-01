@@ -64,6 +64,7 @@ A configuration json file should contain following information
 ```
 {
   "operationMode": "",              //scan or monitor
+  "scope": "",                      //log or code
 
   "token": "",                      //Loggicat Cloud API token
   "uuid": "",                        //Loggicat Cloud API token UUID
@@ -86,6 +87,10 @@ A configuration json file should contain following information
 - **Scan** : one time scan, this should be used for logs and code
 In the Monitor mode, clean logs and released security findings will be appended to new logs files with **.loggicat** extension. <br />
 For example, if you are forward myAppLog.txt to a log ingestion platform, you should now use myAppLog.txt.loggicat instead.
+
+## Scope
+- **Code** : Server will try to parse the supported languages such as .go or .xml before scanning
+- **Log** : Server will try to parse logs in the popular formats before scanning
 
 ## API Token, UUID
 API token and UUID can be generated on Loggicat Cloud. <br />
