@@ -16,7 +16,15 @@ func (w *Watcher) ScanFiles() {
 		if os.IsNotExist(err) {
 			continue
 		}
-		leaks, err := w.processLog("scanner", filePath)
+		var leaks []api.DataLeak
+		switch w.Scope {
+		case "log":
+			leaks, err = w.processLog("scanner", filePath)
+		case "code":
+			leaks, err = w.processCode("scanner", filePath)
+		default:
+			util.PrintRed("invalid scope, " + w.Scope)
+		}
 		if err != nil {
 			util.PrintRed("failed to scan file " + filePath)
 			continue
@@ -29,7 +37,7 @@ func (w *Watcher) ScanFiles() {
 		if w.OutputMode == "local" {
 			err := util.SaveDataLeaksOffline(totalLeaks, w.OutputLocation)
 			if err != nil {
-				util.PrintRed("failed to generate scan result file, " + err.Error())
+				util.PrintRed("failed to generate scan result file, err : " + err.Error())
 			}
 		}
 	} else {

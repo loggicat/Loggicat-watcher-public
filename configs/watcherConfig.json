@@ -1,5 +1,7 @@
 {
     "operationMode": "scan",
+    "scope" : "log",
+    
     "token": "",
     "uuid": "",
     "refreshTime": 5,

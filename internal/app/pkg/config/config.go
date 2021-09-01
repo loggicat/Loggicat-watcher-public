@@ -17,6 +17,7 @@ type ConfigStruct struct {
 	EngineType     string   `json:"engineType"`
 	EngineURL      string   `json:"engineURL"`
 	OperationMode  string   `json:"operationMode"`
+	Scope          string   `json:"scope"`
 	Token          string   `json:"token"`
 	UUID           string   `json:"uuid"`
 	RefreshTime    int      `json:"refreshTime"`
@@ -81,6 +82,11 @@ func GenerateConfig() ConfigStruct {
 		util.PrintRedFatal("User entered a wrong Watcher mode when generating config file, exiting...")
 	}
 
+	scope := promptAndReturn("[+] Please enter the watcher scope, this can be log or code : ", reader)
+	if scope != "log" && mode != "code" {
+		util.PrintRedFatal("User entered a wrong Watcher scope when generating config file, exiting...")
+	}
+
 	filesString := promptAndReturn("Please enter the paths to scan or monitor, seperate multiple values with ',', for example: /var/logs/,/var/logs/log2.txt ", reader)
 	files := strings.Split(filesString, ",")
 	if len(files) == 0 {
@@ -97,6 +103,7 @@ func GenerateConfig() ConfigStruct {
 		UUID:           uuid,
 		Token:          token,
 		OperationMode:  mode,
+		Scope:          scope,
 		RefreshTime:    refreshTimeInt,
 		Path:           files,
 		OutputMode:     outputMode,
@@ -106,7 +113,7 @@ func GenerateConfig() ConfigStruct {
 	file, _ := json.MarshalIndent(ret, "", " ")
 	err := ioutil.WriteFile(configLoc, file, 0600)
 	if err != nil {
-		util.PrintRedFatal("Failed to generate file watcherConfig.json" + err.Error())
+		util.PrintRedFatal("Failed to generate file watcherConfig.json, err : " + err.Error())
 	}
 
 	util.PrintGreen("New config file watcherConfig.json generated  in current directory")
@@ -119,16 +126,16 @@ func ReadConfig(configFile string) ConfigStruct {
 	path := configFile
 	jsonFile, err := os.Open(path)
 	if err != nil {
-		util.PrintRedFatal("Failed to open the config file, " + err.Error())
+		util.PrintRedFatal("Failed to open the config file, err : " + err.Error())
 	}
 	defer jsonFile.Close()
 	byteValue, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
-		util.PrintRedFatal("Failed to read the config file, " + err.Error())
+		util.PrintRedFatal("Failed to read the config file, err : " + err.Error())
 	}
 	var res ConfigStruct
 	if err := json.Unmarshal(byteValue, &res); err != nil {
-		util.PrintRedFatal("Failed to parse the config file, " + err.Error())
+		util.PrintRedFatal("Failed to parse the config file, err : " + err.Error())
 	}
 	util.PrintGreen("Config loaded successfully")
 	return res

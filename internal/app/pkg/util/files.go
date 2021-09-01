@@ -19,7 +19,7 @@ func CollectFiles(path []string) []string {
 				PrintGreen("file doesn't exist when collecting files, skipping...")
 				continue
 			} else {
-				PrintRed("failed to get file location, " + err.Error())
+				PrintRed("failed to get file location, err : " + err.Error())
 				continue
 			}
 		}
@@ -45,7 +45,7 @@ func GatherFilesInDir(path string) ([]string, error) {
 	var subFiles []string
 	err := filepath.Walk(path, Visit(&subFiles))
 	if err != nil {
-		PrintRed("Failed to gather files in dir, " + err.Error())
+		PrintRed("Failed to gather files in dir, err : " + err.Error())
 	}
 	return subFiles, err
 }
@@ -53,7 +53,7 @@ func GatherFilesInDir(path string) ([]string, error) {
 func Visit(files *[]string) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			PrintRed("Failed to visit files in dir, " + err.Error())
+			PrintRed("Failed to visit files in dir, err : " + err.Error())
 		}
 		//!info.IsDir()
 		ext := filepath.Ext(info.Name())
@@ -67,7 +67,7 @@ func Visit(files *[]string) filepath.WalkFunc {
 func SaveDataLeaksOffline(inputStruct interface{}, outputLocation string) error {
 	result, err := json.Marshal(inputStruct)
 	if err != nil {
-		PrintRed("failed to marshal dataleaks, " + err.Error())
+		PrintRed("failed to marshal dataleaks, err : " + err.Error())
 		return err
 	}
 	currentTime := time.Now()
@@ -75,13 +75,13 @@ func SaveDataLeaksOffline(inputStruct interface{}, outputLocation string) error 
 
 	f, err := os.OpenFile(curTime+"_"+outputLocation, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
-		PrintRed("failed to open output location, " + err.Error())
+		PrintRed("failed to open output location, err : " + err.Error())
 		return err
 	}
 	defer f.Close()
 	_, err = io.WriteString(f, string(result))
 	if err != nil {
-		PrintRed("failed to save dataleaks to output file, " + err.Error())
+		PrintRed("failed to save dataleaks to output file, err : " + err.Error())
 		return err
 	}
 	PrintGreen("scan result updated at " + outputLocation)
@@ -91,12 +91,12 @@ func SaveDataLeaksOffline(inputStruct interface{}, outputLocation string) error 
 func WriteToLoggicatLog(fileName string, text string) error {
 	f, err := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		PrintRed("failed to create .loggicat file, " + err.Error())
+		PrintRed("failed to create .loggicat file, err : " + err.Error())
 		return err
 	}
 	defer f.Close()
 	if _, err := f.WriteString(text); err != nil {
-		PrintRed("failed to write .loggicat file, " + err.Error())
+		PrintRed("failed to write .loggicat file, err : " + err.Error())
 		return err
 	}
 	return nil

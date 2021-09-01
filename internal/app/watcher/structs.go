@@ -7,6 +7,7 @@ type Watcher struct {
 	EngineType     string
 	EngineURL      string
 	OperationMode  string
+	Scope          string
 	UUID           string
 	Token          string
 	RefreshTime    int

@@ -2,7 +2,9 @@ package publicwatcher
 
 import (
 	"bufio"
+	"errors"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -37,11 +39,17 @@ func (w *Watcher) Init(configFile string) {
 	}
 	util.PrintGreen("Operation mode set to " + w.OperationMode)
 
+	w.Scope = conf.Scope
+	if w.Scope != "code" && w.OperationMode != "log" {
+		util.PrintRedFatal("Invalid  scope, this can only be code or log, exiting...")
+	}
+	util.PrintGreen("Scope set to " + w.Scope)
+
 	opt := nutsdb.DefaultOptions
 	opt.Dir = "nutsdb"
 	db, err := nutsdb.Open(opt)
 	if err != nil {
-		util.PrintRedFatal("Failed to connect to nutsdb, " + err.Error())
+		util.PrintRedFatal("Failed to connect to nutsdb, err : " + err.Error())
 	}
 	w.DB = db
 	dbactions.Test(db)
@@ -84,7 +92,7 @@ func (w *Watcher) Init(configFile string) {
 	hostName, err := os.Hostname()
 	if err != nil {
 		if err != nil {
-			util.PrintRedFatal("Failed to get hostname, " + err.Error())
+			util.PrintRedFatal("Failed to get hostname, err : " + err.Error())
 		}
 	}
 
@@ -99,14 +107,73 @@ func (w *Watcher) Init(configFile string) {
 	util.PrintGreen("Watcher Initiated")
 }
 
+func (w *Watcher) processCode(scanMode string, filePath string) ([]api.DataLeak, error) {
+	util.PrintGreen("Start processing code " + filePath)
+	info, err := os.Stat(filePath)
+	if err != nil {
+		util.PrintRed("failed to get file info, err : " + err.Error())
+		return nil, err
+	}
+	fileSize := info.Size()
+
+	if fileSize >= 10000000 {
+		util.PrintRed("code size greater than 10MB is not supported")
+		return nil, errors.New("code size greater than 10MB for file " + filePath)
+	}
+
+	buf, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		util.PrintRed("failed to process code, err : " + err.Error())
+		return nil, err
+	}
+
+	codeSnippet := string(buf)
+
+	var leaks []api.DataLeak
+
+	fileName := filepath.Base(filePath)
+	ext := filepath.Ext(fileName)
+
+	switch w.EngineType {
+	case "cloud":
+		payload := map[string]interface{}{
+			"codeSnippet":   codeSnippet,
+			"uuid":          w.UUID,
+			"filePath":      filePath,
+			"fileName":      filepath.Base(filePath),
+			"storeOnServer": w.OutputMode == "cloud",
+			"hostName":      w.HostName,
+			"extension":     ext,
+		}
+		leaks, err = api.ScanCodeSnippet(w.Token, payload)
+		if err != nil {
+			return nil, err
+		}
+	case "local":
+		payload := map[string]string{
+			"code":      codeSnippet,
+			"extension": ext,
+		}
+		leaks, err = api.EngineScanCode(w.EngineURL, payload)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	util.PrintGreen("Finished processing code " + filePath)
+
+	return leaks, nil
+
+}
+
 func (w *Watcher) processLog(scanMode string, filePath string) ([]api.DataLeak, error) {
-	util.PrintGreen("Start scanning file " + filePath)
+	util.PrintGreen("Start processing log file " + filePath)
 	totalLeaks := []api.DataLeak{}
 
 	file, err := os.Open(filePath)
 
 	if err != nil {
-		util.PrintRed("failed to open file to scan, " + err.Error())
+		util.PrintRed("failed to open file to scan, err : " + err.Error())
 		return nil, err
 	}
 
@@ -117,7 +184,7 @@ func (w *Watcher) processLog(scanMode string, filePath string) ([]api.DataLeak, 
 
 	info, err := os.Stat(filePath)
 	if err != nil {
-		util.PrintRed("failed to get file info, " + err.Error())
+		util.PrintRed("failed to get file info, err : " + err.Error())
 		return nil, err
 	}
 
@@ -132,7 +199,7 @@ func (w *Watcher) processLog(scanMode string, filePath string) ([]api.DataLeak, 
 		if offsetStr != "" {
 			offset, err = strconv.ParseInt(offsetStr, 10, 64)
 			if err != nil {
-				util.PrintRed("Failed to convert filesize to string, " + err.Error())
+				util.PrintRed("Failed to convert filesize to string, err : " + err.Error())
 				return nil, err
 			}
 		}
@@ -146,7 +213,7 @@ func (w *Watcher) processLog(scanMode string, filePath string) ([]api.DataLeak, 
 		}
 		_, err = file.Seek(offset, 0)
 		if err != nil {
-			util.PrintRed("Failed to discard offset, " + err.Error())
+			util.PrintRed("Failed to discard offset, err : " + err.Error())
 			return nil, err
 		}
 	}
@@ -175,7 +242,7 @@ func (w *Watcher) processLog(scanMode string, filePath string) ([]api.DataLeak, 
 		n, err := io.ReadFull(r, buf[:cap(buf)])
 
 		if err != nil {
-			util.PrintRed("Failed to read file content, " + err.Error())
+			util.PrintRed("Failed to read file content, err : " + err.Error())
 			return nil, err
 		}
 		buf = buf[:n]
@@ -255,7 +322,7 @@ func (w *Watcher) processLog(scanMode string, filePath string) ([]api.DataLeak, 
 		}
 	}
 
-	util.PrintGreen("Finished scanning file " + filePath)
+	util.PrintGreen("Finished processing log " + filePath)
 
 	return totalLeaks, nil
 }

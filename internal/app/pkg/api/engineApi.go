@@ -21,27 +21,41 @@ func EngineHealthCheck(engineURL string) (bool, error) {
 	}
 	req, err := http.NewRequest("GET", healthUrl, nil)
 	if err != nil {
-		util.PrintRed("Failed to create health check request, " + err.Error())
+		util.PrintRed("Failed to create health check request, err : " + err.Error())
 		return false, err
 	}
 	client := &http.Client{}
 	response, err := client.Do(req)
 	if err != nil {
-		util.PrintRed("Failed to send health check request, " + err.Error())
+		util.PrintRed("Failed to send health check request, err : " + err.Error())
 		return false, err
 	}
 
 	return response.StatusCode == 200, nil
 }
 
-func EngineScanLog(engineURL string, payload map[string]string) ([]DataLeak, error) {
-	var scanLogURL string
+func EngineScanCode(engineURL string, payload map[string]string) ([]DataLeak, error) {
+	var scanURL string
 	if strings.HasSuffix(engineURL, "/") {
-		scanLogURL = engineURL + "api/scan/log"
+		scanURL = engineURL + "api/scan/code"
 	} else {
-		scanLogURL = engineURL + "/api/scan/log"
+		scanURL = engineURL + "/api/scan/code"
 	}
-	res, err := SendEngineRequest(scanLogURL, payload)
+	res, err := SendEngineRequest(scanURL, payload)
+	if err != nil {
+		return nil, err
+	}
+	return res.Leaks, nil
+}
+
+func EngineScanLog(engineURL string, payload map[string]string) ([]DataLeak, error) {
+	var scanURL string
+	if strings.HasSuffix(engineURL, "/") {
+		scanURL = engineURL + "api/scan/log"
+	} else {
+		scanURL = engineURL + "/api/scan/log"
+	}
+	res, err := SendEngineRequest(scanURL, payload)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +73,7 @@ func SendEngineRequest(url string, payload map[string]string) (ServerResponse, e
 	json.NewEncoder(payloadBuf).Encode(payload)
 	req, err = http.NewRequest("POST", url, payloadBuf)
 	if err != nil {
-		util.PrintRed("Failed to generate new request, " + err.Error())
+		util.PrintRed("Failed to generate new request, err : " + err.Error())
 		return decodedRes, err
 	}
 
@@ -67,19 +81,19 @@ func SendEngineRequest(url string, payload map[string]string) (ServerResponse, e
 	response, err := client.Do(req)
 
 	if err != nil {
-		util.PrintRed("Failed to send a post request to server, " + err.Error())
+		util.PrintRed("Failed to send a post request to server, err : " + err.Error())
 		return decodedRes, err
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		util.PrintRed("Failed to parse server reponse of a post request, " + err.Error())
+		util.PrintRed("Failed to parse server reponse of a post request, err : " + err.Error())
 		return decodedRes, err
 	}
 
 	err = json.Unmarshal(body, &decodedRes)
 	if err != nil {
-		util.PrintRed("Failed to unmarshal server response, " + err.Error())
+		util.PrintRed("Failed to unmarshal server response, err : " + err.Error())
 		return decodedRes, err
 	}
 

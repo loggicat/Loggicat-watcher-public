@@ -16,7 +16,7 @@ import (
 func (w *Watcher) MonitorFiles() {
 	fsn, err := fsnotify.NewWatcher()
 	if err != nil {
-		util.PrintRedFatal("failed to start file monitor, " + err.Error())
+		util.PrintRedFatal("failed to start file monitor, err : " + err.Error())
 	}
 
 	done := make(chan bool)
@@ -48,14 +48,14 @@ func (w *Watcher) MonitorFiles() {
 						if w.OutputMode == "local" {
 							err := util.SaveDataLeaksOffline(totalLeaks, w.OutputLocation)
 							if err != nil {
-								util.PrintRed("failed to generate scan result file, " + err.Error())
+								util.PrintRed("failed to generate scan result file, err : " + err.Error())
 							}
 						}
 					}
 
 				case "CREATE":
 					if err := fsn.Add(event.Name); err != nil {
-						util.PrintRed("failed to monitor path " + event.Name + ", " + err.Error())
+						util.PrintRed("failed to monitor path " + event.Name + ", err : " + err.Error())
 						continue
 					}
 					totalLeaks, err := w.processLog("monitor", event.Name)
@@ -68,20 +68,20 @@ func (w *Watcher) MonitorFiles() {
 						if w.OutputMode == "local" {
 							err := util.SaveDataLeaksOffline(totalLeaks, w.OutputLocation)
 							if err != nil {
-								util.PrintRed("failed to generate scan result file, " + err.Error())
+								util.PrintRed("failed to generate scan result file, err : " + err.Error())
 							}
 						}
 					}
 				}
 			case err := <-fsn.Errors:
-				util.PrintRed("encoutnered FSn error " + err.Error())
+				util.PrintRed("encoutnered FSn error err : " + err.Error())
 			}
 		}
 	}()
 	collectedFiles := util.CollectFiles(w.Path)
 	for _, filePath := range collectedFiles {
 		if err := fsn.Add(filePath); err != nil {
-			util.PrintRed("failed to monitor path " + filePath + ", " + err.Error())
+			util.PrintRed("failed to monitor path " + filePath + ", err : " + err.Error())
 		}
 	}
 	<-done
@@ -97,7 +97,7 @@ func (w *Watcher) GetRelease() {
 		}
 		triagedLeaks, err := api.GetRelease(w.Token, payload)
 		if err != nil {
-			util.PrintRed("failed to get release, " + err.Error())
+			util.PrintRed("failed to get release, err : " + err.Error())
 			continue
 		}
 		grouped := groupRelease(triagedLeaks)
@@ -155,12 +155,12 @@ func writeToLog(filePath string, text string) error {
 	f, err := os.OpenFile(filePath,
 		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		util.PrintRed("failed to open log file, " + err.Error())
+		util.PrintRed("failed to open log file, err : " + err.Error())
 		f.Close()
 		return err
 	}
 	if _, err := f.WriteString(text); err != nil {
-		util.PrintRed("failed to write to log file, " + err.Error())
+		util.PrintRed("failed to write to log file, err : " + err.Error())
 		f.Close()
 		return err
 	}

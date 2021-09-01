@@ -45,7 +45,7 @@ func SendPostRequest(apiEndpoint string, token string, payload interface{}) (Ser
 	json.NewEncoder(payloadBuf).Encode(payload)
 	req, err = http.NewRequest("POST", url, payloadBuf)
 	if err != nil {
-		util.PrintRed("Failed to generate new request, " + err.Error())
+		util.PrintRed("Failed to generate new request, err : " + err.Error())
 		return decodedRes, err
 	}
 
@@ -54,19 +54,19 @@ func SendPostRequest(apiEndpoint string, token string, payload interface{}) (Ser
 	response, err := client.Do(req)
 
 	if err != nil {
-		util.PrintRed("Failed to send a post request to server, " + err.Error())
+		util.PrintRed("Failed to send a post request to server, err : " + err.Error())
 		return decodedRes, err
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		util.PrintRed("Failed to parse server reponse of a post request, " + err.Error())
+		util.PrintRed("Failed to parse server reponse of a post request, err : " + err.Error())
 		return decodedRes, err
 	}
 
 	err = json.Unmarshal(body, &decodedRes)
 	if err != nil {
-		util.PrintRed("Failed to unmarshal server response, " + err.Error())
+		util.PrintRed("Failed to unmarshal server response, err : " + err.Error())
 		return decodedRes, err
 	}
 
@@ -98,6 +98,14 @@ type Release struct {
 	ID   uint   `json:"id"`
 	Line string `json:"line"`
 	Path string `json:"path"`
+}
+
+func ScanCodeSnippet(token string, payload interface{}) ([]DataLeak, error) {
+	res, err := SendPostRequest("scanCodeSnippet", token, payload)
+	if err != nil {
+		return nil, err
+	}
+	return res.Leaks, nil
 }
 
 func ScanLogSnippet(token string, payload interface{}) ([]DataLeak, error) {
